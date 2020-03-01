@@ -19,6 +19,10 @@ public class Operationist extends Thread {
     private String operatorName;
     private Integer countOfClients = 0;
 
+    public String getOperatorName() {
+        return operatorName;
+    }
+
     public Operationist(Bank bank, String operatorName) {
         this.bank = bank;
         this.operatorName = operatorName;
@@ -51,27 +55,29 @@ public class Operationist extends Thread {
                 countOfClients = countOfClients - 1;
                 if (currentClient.isWithdrawMoney()) {
                     if (currentClient.getMoney() > bank.getMoney()) {
-                        System.out.println("Оператор "+ operatorName + " не может выдать деньги клинту " + currentClient.getClientName());
+                        //System.out.println("Оператор "+ operatorName + " не может выдать деньги клинту " + currentClient.getClientName());
                         this.clients.add(currentClient);
                     } else {
+                        System.out.println("Клиент " + currentClient.getClientName() + " снял деньги у оператора " + operatorName + currentClient.getMoney());
                         bank.minusMoney(currentClient.getMoney());
                         try {
                             Thread.sleep(currentClient.getTime());
+
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        System.out.println("Клиент "+ currentClient.getClientName() + " снял деньги у оператора" + operatorName);
-                        System.out.println("Общий счёт: " + bank.getMoney());
                     }
                 } else {
+                    System.out.println("Клиент " + currentClient.getClientName() + " положил деньги в банк у операционистки " + operatorName + " на сумму " + currentClient.getMoney());
                     bank.plusMoney(currentClient.getMoney());
-                    System.out.println("Клиент "+ currentClient.getClientName() + " положил деньги в банк у операционистки " + operatorName);
                     try {
                         Thread.sleep(currentClient.getTime());
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+
             }
         }
     }

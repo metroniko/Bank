@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
 
         Bank bank = new Bank();
-        bank.setMoney(10000);
+        bank.setMoney(0);
 
         List<Operationist> operationistList = new ArrayList<Operationist>();
         Operationist op1 = new Operationist(bank, "first Operator");
@@ -21,13 +21,12 @@ public class Main {
         for (Operationist operationist : operationistList) {
             operationist.start();
         }
-
+        boolean flag;
         for (int i = 0; i < 10; i++) {
-            boolean flag = true;
-            if (i/2 == 0) {
-                flag = false;
-            }
-             operationistList.get(0).addClients(new Client(flag, ((int) (Math.random() * 250) ), ((int) (Math.random() * 5000) ), ("Client№ " + (i+1))));
+            flag = i % 2 != 0;
+            Operationist operationist =  operationistList.get(0);
+            operationist.addClients(new Client(flag, ((int) (Math.random() * 250) ), ((int) (Math.random() * 5000) ), ("Client№ " + (i+1))));
+
 
             Collections.sort(operationistList, new Comparator<Operationist>() {
                 public int compare(Operationist o1, Operationist o2) {
