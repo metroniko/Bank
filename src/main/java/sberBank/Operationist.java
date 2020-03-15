@@ -53,13 +53,26 @@ public class Operationist extends Thread {
             } else {
                 Client currentClient = clients.remove(0);
                 countOfClients = countOfClients - 1;
-                if (currentClient.isWithdrawMoney()) {
-                    if (currentClient.getMoney() > bank.getMoney()) {
-                        //System.out.println("Оператор "+ operatorName + " не может выдать деньги клинту " + currentClient.getClientName());
-                        this.clients.add(currentClient);
-                    } else {
-                        System.out.println("Клиент " + currentClient.getClientName() + " снял деньги у оператора " + operatorName + currentClient.getMoney());
-                        bank.minusMoney(currentClient.getMoney());
+                synchronized (bank) {
+                    if (currentClient.isWithdrawMoney()) {
+                        if (currentClient.getMoney() > bank.getMoney()) {
+                            //System.out.println("Оператор "+ operatorName + " не может выдать деньги клинту " + currentClient.getClientName());
+                            this.clients.add(currentClient);
+                        } else {
+                            System.out.println("Клиент " + currentClient.getClientName() + " снял деньги у оператора " + operatorName + currentClient.getMoney());
+                            bank.minusMoney(currentClient.getMoney());
+                            try {
+                                Thread.sleep(currentClient.getTime());
+
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                    if (!currentClient.isWithdrawMoney()) {
+                        System.out.println("Клиент " + currentClient.getClientName() + " положил деньги в банк у операционистки " + operatorName + " на сумму " + currentClient.getMoney());
+                        bank.plusMoney(currentClient.getMoney());
                         try {
                             Thread.sleep(currentClient.getTime());
 
@@ -67,17 +80,6 @@ public class Operationist extends Thread {
                             e.printStackTrace();
                         }
                     }
-                } else {
-                    System.out.println("Клиент " + currentClient.getClientName() + " положил деньги в банк у операционистки " + operatorName + " на сумму " + currentClient.getMoney());
-                    bank.plusMoney(currentClient.getMoney());
-                    try {
-                        Thread.sleep(currentClient.getTime());
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
             }
         }
     }
